@@ -211,6 +211,10 @@ def make_search_parser(subparsers):
 		action='store_true',
 		default=None,
 		help = 'search comments instead of title')
+	search_parser.add_argument('-re', '--regexp',
+		action='store_true',
+		default=None,
+		help = 'search with regular expression')
 	search_parser.add_argument('--product',
 		action='append',
 		help = 'restrict by product (one or more)')

@@ -303,7 +303,7 @@ class Bugz:
 			assigned_to = None, reporter = None, cc = None,
 			commenter = None, whiteboard = None, keywords = None,
 			status = [], severity = [], priority = [], product = [],
-			component = []):
+			component = [], regexp = False):
 		"""Search bugzilla for a bug.
 
 		@param query: query string to search in title or {comments}.
@@ -334,6 +334,8 @@ class Bugz:
 		@type    priority: list
 		@keyword comments: search comments instead of just bug title.
 		@type    comments: bool
+		@keyword regexp: search with regular expression
+		@type    regexp: bool
 		@keyword product: search within products. empty means all.
 		@type    product: list
 		@keyword component: search within components. empty means all.
@@ -348,7 +350,11 @@ class Bugz:
 
 		qparams = config.params['list'].copy()
 		if comments:
-			qparams['long_desc'] = query
+			if regexp:
+				qparams['longdesc_type'] = 'regexp'
+				qparams['longdesc'] = query
+			else:
+				qparams['long_desc'] = query
 		else:
 			qparams['short_desc'] = query
 
