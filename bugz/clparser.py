@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import os
+import base64
+from ConfigParser import ConfigParser
 
 from bugz import __version__
 from bugz.cli import PrettyBugz
@@ -227,18 +230,33 @@ def make_search_parser(subparsers):
 	search_parser.set_defaults(func = PrettyBugz.search)
 
 def make_parser():
+	config_file = os.path.expanduser('~/.pybugz')
+	config = ConfigParser()
+	if os.path.exists(config_file):
+		try:
+			config.read(config_file)
+			base = config.get('bugzilla', 'base')
+			httpuser  = config.get('httpauth', 'username')
+			_httppassword = config.get('httpauth', 'password')
+			if _httppassword:
+				httppassword = base64.b64decode(_httppassword)
+		except Exception:
+			pass
+
 	parser = argparse.ArgumentParser(
 		epilog = 'use -h after a sub-command for sub-command specific help')
 	parser.add_argument('-b', '--base',
-		default = 'https://bugs.gentoo.org/',
+		default = (base if base else 'https://bugs.gentoo.org/'),
 		help = 'base URL of Bugzilla')
 	parser.add_argument('-u', '--user',
 		help = 'username for commands requiring authentication')
 	parser.add_argument('-p', '--password',
 		help = 'password for commands requiring authentication')
 	parser.add_argument('-H', '--httpuser',
+		default = (httpuser if httpuser else ""),
 		help = 'username for basic http auth')
 	parser.add_argument('-P', '--httppassword',
+		default = (httppassword if httppassword else ""),
 		help = 'password for basic http auth')
 	parser.add_argument('-f', '--forget',
 		action='store_true',
