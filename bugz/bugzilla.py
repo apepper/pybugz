@@ -359,7 +359,12 @@ class Bugz:
 			qparams['short_desc'] = query
 
 		qparams['order'] = config.choices['order'].get(order, 'Bug Number')
-		qparams['bug_severity'] = severity or []
+		if severity == None:
+			qparams['bug_severity'] = []
+		elif [s.upper() for s in severity] == ['ALL']:
+			qparams['bug_severity'] = config.choices['severity']
+		else:
+			qparams['bug_severity'] = severity
 		qparams['priority'] = priority or []
 		if status == None:
 			qparams['bug_status'] = ['NEW', 'ASSIGNED', 'REOPENED']

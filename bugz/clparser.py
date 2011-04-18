@@ -201,7 +201,6 @@ def make_search_parser(subparsers):
 		help = 'restrict by status (one or more, use all for all statuses)')
 	search_parser.add_argument('--severity',
 		action='append',
-		choices = config.choices['severity'],
 		help = 'restrict by severity (one or more)')
 	search_parser.add_argument('--priority',
 		action='append',
