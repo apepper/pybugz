@@ -231,6 +231,9 @@ def make_search_parser(subparsers):
 	search_parser.add_argument('--show-url',
 		action = 'store_true',
 		help='show bug id as a url.')
+	search_parser.add_argument('--show-only-bug-id',
+		action = 'store_true',
+		help='shows only bug ids.')
 	search_parser.set_defaults(func = PrettyBugz.search)
 
 def make_parser():

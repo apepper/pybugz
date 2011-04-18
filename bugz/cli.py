@@ -166,6 +166,8 @@ class PrettyBugz(Bugz):
 		del kwds['show_status']
 		show_url = kwds['show_url']
 		del kwds['show_url']
+		show_only_bug_id = kwds['show_only_bug_id']
+		del kwds['show_only_bug_id']
 		search_opts = sorted([(opt, val) for opt, val in kwds.items()
 			if val != None and opt != 'order'])
 
@@ -193,7 +195,7 @@ class PrettyBugz(Bugz):
 			self.log('No bugs found.')
 			return
 
-		self.listbugs(result, show_url, show_status)
+		self.listbugs(result, show_url, show_status, show_only_bug_id)
 
 	def namedcmd(self, command, show_status=False, show_url=False):
 		"""Run a command stored in Bugzilla by name."""
@@ -569,7 +571,7 @@ class PrettyBugz(Bugz):
 			raise RuntimeError("Failed to attach '%s' to bug %s%s" % (filename,
 				bugid, reason))
 
-	def listbugs(self, buglist, show_url=False, show_status=False):
+	def listbugs(self, buglist, show_url=False, show_status=False, show_only_bug_id=False):
 		for row in buglist:
 			bugid = row['bugid']
 			if show_url:
@@ -581,9 +583,11 @@ class PrettyBugz(Bugz):
 				line = '%s %s' % (line, status)
 			if row.has_key('assignee'): # Novell does not have 'assignee' field
 				assignee = row['assignee'].split('@')[0]
-				line = '%s %-20s' % (line, assignee)
+				if not show_only_bug_id:
+					line = '%s %-20s' % (line, assignee)
 
-			line = '%s %s' % (line, desc)
+			if not show_only_bug_id:
+				line = '%s %s' % (line, desc)
 
 			try:
 				print line.encode(self.enc)[:self.columns]
